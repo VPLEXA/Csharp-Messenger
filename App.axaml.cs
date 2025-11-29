@@ -2,7 +2,6 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using MessengerClient.Views;
-using MessengerClient.ViewModels;
 
 namespace MessengerClient
 {
@@ -16,10 +15,7 @@ namespace MessengerClient
         public override void OnFrameworkInitializationCompleted()
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-                desktop.MainWindow = new MainWindow
-                {
-                    DataContext = new MainWindowViewModel()
-                };
+                desktop.MainWindow = new MainWindow();
 
             base.OnFrameworkInitializationCompleted();
         }
