@@ -1,0 +1,20 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:MessengerClient.ViewModels"
+             x:Class="MessengerClient.Views.LoginView"
+             x:DataType="vm:LoginViewModel">
+    
+    <Grid Width="300" Height="250" Background="White">
+        <StackPanel Spacing="15" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock Text="Messenger Login" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center"/>
+            
+            <TextBox Watermark="Username" Text="{Binding Username}" Width="200"/>
+            <TextBox Watermark="Password" Text="{Binding Password}" PasswordChar="*" Width="200"/>
+            
+            <Button Content="Login" Command="{Binding LoginCommand}" Width="100" HorizontalAlignment="Center"/>
+            
+            <TextBlock Text="{Binding ErrorMessage}" Foreground="Red" TextWrapping="Wrap" 
+                       HorizontalAlignment="Center" MaxWidth="200"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

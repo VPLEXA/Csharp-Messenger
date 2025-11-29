@@ -24,5 +24,8 @@ build_property.EnableCodeStyleSeverity =
 [/Users/masha/Csharp-Messenger-1/App.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
+[/Users/masha/Csharp-Messenger-1/Views/LoginView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
 [/Users/masha/Csharp-Messenger-1/Views/MainWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
