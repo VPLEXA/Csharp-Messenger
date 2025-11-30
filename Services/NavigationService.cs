@@ -7,19 +7,21 @@ namespace MessengerClient.Services
     public class NavigationService
     {
         private ContentControl _currentContent;
-        private MainWindowViewModel _mainViewModel;
 
-        public NavigationService(ContentControl content, MainWindowViewModel mainViewModel)
+        public NavigationService(ContentControl content)
         {
             _currentContent = content;
-            _mainViewModel = mainViewModel;
         }
 
         public void NavigateToLogin()
         {
-            var loginVM = new LoginViewModel(_mainViewModel.StateManager);
+            var loginVM = new LoginViewModel();
             loginVM.LoginSuccessful += () => NavigateToChatList();
-            _currentContent.Content = new Views.LoginView { DataContext = loginVM };
+            
+            var loginView = new Views.LoginView();
+            loginView.DataContext = loginVM;
+            
+            _currentContent.Content = loginView;
         }
 
         public void NavigateToChatList()
@@ -27,9 +29,10 @@ namespace MessengerClient.Services
             // Заглушка - завтра заменим на реальный ChatListView
             _currentContent.Content = new TextBlock 
             { 
-                Text = "Chat List - Coming Tomorrow!", 
+                Text = "SUCCESS! Chat List Coming Tomorrow!", 
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                FontSize = 16
             };
         }
     }

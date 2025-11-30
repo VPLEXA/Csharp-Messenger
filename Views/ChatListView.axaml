@@ -1,0 +1,91 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:MessengerClient.ViewModels"
+             x:Class="MessengerClient.Views.ChatListView"
+             x:DataType="vm:ChatListViewModel">
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#2b579a" Padding="15">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <TextBlock Grid.Column="0" Text="Messenger" FontSize="18" FontWeight="Bold" Foreground="White"
+                          VerticalAlignment="Center"/>
+                
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding CurrentUser.Username}" Foreground="White" VerticalAlignment="Center"/>
+                    <Button Content="Logout" Command="{Binding LogoutCommand}" Padding="10,5" Background="#e74c3c" Foreground="White"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Chat List -->
+        <ScrollViewer Grid.Row="1">
+            <ItemsControl ItemsSource="{Binding Chats}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Background="Transparent" Margin="0,1" Cursor="Hand">
+                            <Border.Styles>
+                                <Style Selector="Border:pointerover">
+                                    <Setter Property="Background" Value="#f0f0f0"/>
+                                </Style>
+                            </Border.Styles>
+                            
+                            <Grid Margin="10" Height="60">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Avatar -->
+                                <Border Grid.Column="0" Width="40" Height="40" Background="#3498db" 
+                                        CornerRadius="20" Margin="0,0,10,0">
+                                    <TextBlock Text="{Binding Name}"
+                                               Foreground="White" FontWeight="Bold"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+
+                                <!-- Chat Info -->
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="14"/>
+                                    <TextBlock Text="{Binding LastMessage.Content}" Foreground="#666" 
+                                               TextTrimming="CharacterEllipsis" MaxWidth="200"/>
+                                </StackPanel>
+
+                                <!-- Time & Unread -->
+                                <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                    <TextBlock Text="{Binding LastMessage.Timestamp, StringFormat='{}{0:HH:mm}'}" 
+                                               Foreground="#999" FontSize="11"/>
+                                    <!-- Простая проверка на unread count -->
+                                    <Border Background="#e74c3c" CornerRadius="10" HorizontalAlignment="Right"
+                                            Margin="0,5,0,0" Padding="5,2" 
+                                            IsVisible="{Binding UnreadCount}">
+                                        <TextBlock Text="{Binding UnreadCount}" Foreground="White" FontSize="10"
+                                                   FontWeight="Bold" HorizontalAlignment="Center"/>
+                                    </Border>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <!-- Footer -->
+        <Border Grid.Row="2" Background="#f8f9fa" Padding="10">
+            <TextBlock Text="Select a chat to start messaging" FontStyle="Italic" Foreground="#666"
+                       HorizontalAlignment="Center"/>
+        </Border>
+    </Grid>
+</UserControl>

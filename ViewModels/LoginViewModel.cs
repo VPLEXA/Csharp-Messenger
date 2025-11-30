@@ -1,16 +1,14 @@
 using System;
 using System.Windows.Input;
-using MessengerClient.Models;
 using MessengerClient.Services;
 
 namespace MessengerClient.ViewModels
 {
     public class LoginViewModel : ViewModelBase
     {
-        private readonly StateManager _stateManager;
-        private string _username = string.Empty;
-        private string _password = string.Empty;
-        private string _errorMessage = string.Empty;
+        private string _username = "test_user";
+        private string _password = "password123";
+        private string _errorMessage = "";
 
         public string Username
         {
@@ -34,29 +32,22 @@ namespace MessengerClient.ViewModels
 
         public event Action? LoginSuccessful;
 
-        public LoginViewModel(StateManager stateManager)
+        public LoginViewModel()
         {
-            _stateManager = stateManager;
             LoginCommand = new RelayCommand(Login);
         }
 
-        public void Login()
+        private void Login()
         {
-            if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password))
+            Console.WriteLine("LOGIN CLICKED!");
+            
+            if (string.IsNullOrEmpty(Username) || string.IsNullOrEmpty(Password))
             {
                 ErrorMessage = "Please enter username and password";
                 return;
             }
 
-            // Временная логика - потом заменим на реальную авторизацию
-            _stateManager.CurrentUser = new User
-            {
-                Id = "1",
-                Username = Username,
-                Email = $"{Username}@example.com"
-            };
-
-            ErrorMessage = string.Empty;
+            Console.WriteLine($"Logging in: {Username}");
             LoginSuccessful?.Invoke();
         }
     }

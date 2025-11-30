@@ -4,9 +4,9 @@ using Avalonia.Markup.Xaml;
 
 namespace MessengerClient.Views
 {
-    public partial class MainWindow : Window
+    public partial class ChatListView : UserControl
     {
-        public MainWindow()
+        public ChatListView()
         {
             InitializeComponent();
         }
