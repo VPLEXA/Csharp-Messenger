@@ -1,0 +1,82 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:MessengerClient.ViewModels"
+             x:Class="MessengerClient.Views.ChatView"
+             x:DataType="vm:ChatViewModel">
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#2b579a" Padding="10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Back Button -->
+                <Button Grid.Column="0" Content="←" Command="{Binding BackCommand}" 
+                        Width="40" Height="40" Background="Transparent" Foreground="White"
+                        FontSize="20" FontWeight="Bold" Margin="0,0,10,0"/>
+
+                <!-- Chat Info -->
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding CurrentChat.Name}" FontSize="16" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock Text="online" FontSize="11" Foreground="#a0c8ff"/>
+                </StackPanel>
+
+                <!-- Actions -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                    <Button Content="📎" Command="{Binding SendFileCommand}" 
+                            Width="35" Height="35" Background="Transparent" Foreground="White"
+                            FontSize="16"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Messages -->
+        <ScrollViewer Grid.Row="1" Padding="10" VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding Messages}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0,5">
+                            <!-- Простой вариант - все сообщения слева -->
+                            <Border CornerRadius="15" Padding="12" MaxWidth="300" HorizontalAlignment="Left"
+                                    Background="#e0e0e0">
+                                <TextBlock Text="{Binding Content}" Foreground="Black"
+                                           TextWrapping="Wrap"/>
+                            </Border>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <!-- Message Input -->
+        <Border Grid.Row="2" Background="#f5f5f5" Padding="10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBox Grid.Column="0" Text="{Binding MessageText}" 
+                         Watermark="Type a message..." 
+                         VerticalAlignment="Center" 
+                         BorderThickness="0" 
+                         Background="White"
+                         Padding="15,10"/>
+
+                <Button Grid.Column="1" Content="Send" Command="{Binding SendMessageCommand}"
+                        Width="80" Height="40" Background="#2b579a" Foreground="White"
+                        FontWeight="Bold" Margin="10,0,0,0"/>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

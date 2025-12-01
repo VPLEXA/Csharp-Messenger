@@ -1,19 +1,20 @@
+using System;
 using System.Collections.ObjectModel;
-using System.Linq;
+using System.Windows.Input;
 using MessengerClient.Models;
 using MessengerClient.Services;
-using System.Windows.Input;
 
 namespace MessengerClient.ViewModels
 {
     public class ChatListViewModel : ViewModelBase
     {
-        private readonly StateManager _stateManager;
+        private readonly User _currentUser;
         private readonly NavigationService _navigationService;
         private Chat? _selectedChat;
 
-        public ObservableCollection<Chat> Chats { get; } = new();
-        public User? CurrentUser => _stateManager.CurrentUser;
+        // Используем ObservableCollection - она автоматически уведомляет UI об изменениях
+        public ObservableCollection<Chat> Chats { get; }
+        public User CurrentUser => _currentUser;
 
         public Chat? SelectedChat
         {
@@ -23,28 +24,32 @@ namespace MessengerClient.ViewModels
                 SetField(ref _selectedChat, value);
                 if (value != null)
                 {
-                    _stateManager.SetCurrentChat(value);
-                    // Завтра добавим навигацию к чату
+                    _navigationService.NavigateToChat(value);
                 }
             }
         }
 
         public ICommand LogoutCommand { get; }
 
-        public ChatListViewModel(StateManager stateManager, NavigationService navigationService)
+        public ChatListViewModel(User currentUser, NavigationService navigationService)
         {
-            _stateManager = stateManager;
+            _currentUser = currentUser;
             _navigationService = navigationService;
+            
+            // Инициализируем коллекцию ДО загрузки данных
+            Chats = new ObservableCollection<Chat>();
+            
             LogoutCommand = new RelayCommand(Logout);
-
-            LoadChats(); // Загружаем тестовые чаты
+            
+            Console.WriteLine($"ChatListViewModel created for user: {currentUser.Username}");
+            
+            LoadChats();
         }
 
         private void LoadChats()
         {
-            // Тестовые данные - потом заменим на реальные
-            Chats.Clear();
-
+            Console.WriteLine("Loading chats...");
+            
             var chats = new[]
             {
                 new Chat { Id = "1", Name = "John Doe", UnreadCount = 2,
@@ -59,16 +64,16 @@ namespace MessengerClient.ViewModels
 
             foreach (var chat in chats)
             {
-                Chats.Add(chat);
+                Console.WriteLine($"Adding chat: {chat.Name}");
+                Chats.Add(chat); // Добавляем в ObservableCollection
             }
+            
+            Console.WriteLine($"Total chats loaded: {Chats.Count}");
         }
 
         private void Logout()
         {
-            _stateManager.CurrentUser = null;
             _navigationService.NavigateToLogin();
         }
     }
-
-
 }
