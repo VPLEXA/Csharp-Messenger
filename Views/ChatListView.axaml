@@ -1,45 +1,45 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="using:MessengerClient.ViewModels"
-             x:Class="MessengerClient.Views.ChatListView"
-             x:DataType="vm:ChatListViewModel">
+             x:Class="MessengerClient.Views.ChatListView">
     
-    <StackPanel Background="White">
+    <Grid Background="White" Name="MainGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
         <!-- Header -->
-        <Border Background="Blue" Padding="15">
-            <TextBlock Text="MESSENGER CHATS" FontSize="18" FontWeight="Bold" Foreground="White"/>
+        <Border Grid.Row="0" Background="#2b579a" Padding="15">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <TextBlock Grid.Column="0" Text="Messenger" FontSize="18" FontWeight="Bold" Foreground="White"/>
+                
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10">
+                    <TextBlock Name="UsernameText" Text="User" Foreground="White" VerticalAlignment="Center"/>
+                    <Button Name="ProfileBtn" Content="Profile" Margin="0,0,10,0" Padding="10,5" 
+                            Background="#3498db" Foreground="White"/>
+                    <Button Name="LogoutBtn" Content="Logout" Padding="10,5" 
+                            Background="#e74c3c" Foreground="White"/>
+                </StackPanel>
+            </Grid>
         </Border>
-        
-        <!-- Прямой показ данных -->
-        <TextBlock Text="{Binding Chats.Count, StringFormat='You have {0} chats:'}" 
-                   Margin="10" FontWeight="Bold"/>
-        
-        <!-- Чат 1 -->
-        <Border Background="#f0f0f0" Margin="10" Padding="10" CornerRadius="5">
-            <TextBlock Text="{Binding Chats[0].Name}" FontWeight="Bold"/>
+
+        <!-- Chat List -->
+        <ScrollViewer Grid.Row="1" Margin="10">
+            <StackPanel Name="ChatsPanel">
+                <!-- Чаты будут добавляться через код -->
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Footer -->
+        <Border Grid.Row="2" Background="#f8f9fa" Padding="10">
+            <TextBlock Name="ChatsCountText" Text="0 chats" FontStyle="Italic" Foreground="#666"
+                       HorizontalAlignment="Center"/>
         </Border>
-        
-        <!-- Чат 2 -->
-        <Border Background="#f0f0f0" Margin="10" Padding="10" CornerRadius="5">
-            <TextBlock Text="{Binding Chats[1].Name}" FontWeight="Bold"/>
-        </Border>
-        
-        <!-- Чат 3 -->
-        <Border Background="#f0f0f0" Margin="10" Padding="10" CornerRadius="5">
-            <TextBlock Text="{Binding Chats[2].Name}" FontWeight="Bold"/>
-        </Border>
-        
-        <!-- Чат 4 -->
-        <Border Background="#f0f0f0" Margin="10" Padding="10" CornerRadius="5">
-            <TextBlock Text="{Binding Chats[3].Name}" FontWeight="Bold"/>
-        </Border>
-        
-        <!-- Кнопки -->
-        <StackPanel Margin="20" Spacing="10">
-            <Button Content="Test Chat 1" Background="Green" Foreground="White" Padding="10"
-                    Click="OpenChat1_Click"/>
-            <Button Content="Logout" Command="{Binding LogoutCommand}" 
-                    Background="Red" Foreground="White" Padding="10"/>
-        </StackPanel>
-    </StackPanel>
+    </Grid>
 </UserControl>

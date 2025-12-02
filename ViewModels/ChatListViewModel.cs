@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using MessengerClient.Models;
 using MessengerClient.Services;
@@ -12,7 +13,6 @@ namespace MessengerClient.ViewModels
         private readonly NavigationService _navigationService;
         private Chat? _selectedChat;
 
-        // Используем ObservableCollection - она автоматически уведомляет UI об изменениях
         public ObservableCollection<Chat> Chats { get; }
         public User CurrentUser => _currentUser;
 
@@ -36,36 +36,37 @@ namespace MessengerClient.ViewModels
             _currentUser = currentUser;
             _navigationService = navigationService;
             
-            // Инициализируем коллекцию ДО загрузки данных
             Chats = new ObservableCollection<Chat>();
-            
             LogoutCommand = new RelayCommand(Logout);
             
             Console.WriteLine($"ChatListViewModel created for user: {currentUser.Username}");
             
-            LoadChats();
+            LoadChatsAsync();
         }
 
-        private void LoadChats()
+        private async void LoadChatsAsync()
         {
+            await Task.Delay(100);
+            
             Console.WriteLine("Loading chats...");
+            Chats.Clear();
             
             var chats = new[]
             {
                 new Chat { Id = "1", Name = "John Doe", UnreadCount = 2,
-                    LastMessage = new Message { Content = "Hello there!", Timestamp = System.DateTime.Now.AddMinutes(-5) }},
+                    LastMessage = new Message { Content = "Hello there!", Timestamp = DateTime.Now.AddMinutes(-5) }},
                 new Chat { Id = "2", Name = "Alice Smith", UnreadCount = 0,
-                    LastMessage = new Message { Content = "How are you?", Timestamp = System.DateTime.Now.AddHours(-1) }},
+                    LastMessage = new Message { Content = "How are you?", Timestamp = DateTime.Now.AddHours(-1) }},
                 new Chat { Id = "3", Name = "Bob Johnson", UnreadCount = 1,
-                    LastMessage = new Message { Content = "Meeting tomorrow", Timestamp = System.DateTime.Now.AddDays(-1) }},
+                    LastMessage = new Message { Content = "Meeting tomorrow", Timestamp = DateTime.Now.AddDays(-1) }},
                 new Chat { Id = "4", Name = "Emma Wilson", UnreadCount = 0,
-                    LastMessage = new Message { Content = "Did you see the file?", Timestamp = System.DateTime.Now.AddDays(-2) }}
+                    LastMessage = new Message { Content = "Did you see the file?", Timestamp = DateTime.Now.AddDays(-2) }}
             };
 
             foreach (var chat in chats)
             {
                 Console.WriteLine($"Adding chat: {chat.Name}");
-                Chats.Add(chat); // Добавляем в ObservableCollection
+                Chats.Add(chat);
             }
             
             Console.WriteLine($"Total chats loaded: {Chats.Count}");
