@@ -1,21 +1,22 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="using:MessengerClient.ViewModels"
-             x:Class="MessengerClient.Views.LoginView"
-             x:DataType="vm:LoginViewModel">
+             x:Class="MessengerClient.Views.LoginView">
     
-    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="15" Background="White">
-        <TextBlock Text="MESSENGER LOGIN" FontSize="20" FontWeight="Bold"/>
+    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="15" Width="300" Background="LightBlue">
+        <TextBlock Text="Messenger Login" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Background="Yellow"/>
         
-        <TextBlock Text="Username:" FontWeight="Bold"/>
-        <TextBox Text="{Binding Username}" Width="250" Background="White" Foreground="Black"/>
+        <!-- Border имитирующий TextBox -->
+        <Border Height="40" Background="White" BorderBrush="Black" BorderThickness="1" CornerRadius="3">
+            <TextBlock Text="Email will appear here" VerticalAlignment="Center" Margin="10,0" Foreground="Gray"/>
+        </Border>
         
-        <TextBlock Text="Password:" FontWeight="Bold"/>
-        <TextBox Text="{Binding Password}" Width="250" Background="White" Foreground="Black"/>
+        <Border Height="40" Background="White" BorderBrush="Black" BorderThickness="1" CornerRadius="3">
+            <TextBlock Text="Password will appear here" VerticalAlignment="Center" Margin="10,0" Foreground="Gray"/>
+        </Border>
         
-        <Button Content="LOGIN" Command="{Binding LoginCommand}" Width="120" Height="35" 
-                Background="#2b579a" Foreground="White" FontWeight="Bold"/>
-                
-        <TextBlock Text="{Binding ErrorMessage}" Foreground="Red" TextAlignment="Center"/>
+        <Button Name="LoginBtn" Content="Login" Height="40" Background="Green" Foreground="White"
+                FontWeight="Bold" HorizontalAlignment="Stretch"/>
+        
+        <TextBlock Name="ErrorText" Foreground="Red" TextAlignment="Center" TextWrapping="Wrap" Background="Pink"/>
     </StackPanel>
 </UserControl>

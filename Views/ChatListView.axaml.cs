@@ -6,95 +6,107 @@ using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
-using MessengerClient.ViewModels;
-using FontWeight = Avalonia.Media.FontWeight;
+using MessengerClient.Models;
+using MessengerClient.Services;
 
 namespace MessengerClient.Views
 {
     public partial class ChatListView : UserControl
     {
-        private ChatListViewModel? _viewModel;
+        private readonly AppController _controller;
         private StackPanel? _chatsPanel;
-        private TextBlock? _usernameText;
         private TextBlock? _chatsCountText;
         
-        public ChatListView()
+        public ChatListView(AppController controller)
         {
+            _controller = controller;
             InitializeComponent();
             
-            // Ждем инициализации
             this.Initialized += (s, e) =>
             {
                 _chatsPanel = this.FindControl<StackPanel>("ChatsPanel");
-                _usernameText = this.FindControl<TextBlock>("UsernameText");
                 _chatsCountText = this.FindControl<TextBlock>("ChatsCountText");
                 
                 var profileBtn = this.FindControl<Button>("ProfileBtn");
                 var logoutBtn = this.FindControl<Button>("LogoutBtn");
                 
-                if (profileBtn != null) profileBtn.Click += ProfileBtn_Click;
-                if (logoutBtn != null) logoutBtn.Click += LogoutBtn_Click;
+                if (profileBtn != null) profileBtn.Click += (s, e) => _controller.ShowProfile();
+                if (logoutBtn != null) logoutBtn.Click += (s, e) => _controller.Logout();
                 
-                // Обновляем UI если ViewModel уже установлен
-                if (_viewModel != null)
-                {
-                    UpdateUI();
-                }
+                LoadChats();
             };
-            
-            this.DataContextChanged += OnDataContextChanged;
         }
 
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
         }
-
-        private void OnDataContextChanged(object? sender, EventArgs e)
+        
+        private void LoadChats()
         {
-            Console.WriteLine("DataContext changed");
+            if (_chatsPanel == null || _chatsCountText == null) return;
             
-            _viewModel = DataContext as ChatListViewModel;
-            
-            if (_viewModel != null)
-            {
-                Console.WriteLine($"ViewModel set. User: {_viewModel.CurrentUser.Username}");
-                
-                // Обновляем UI если элементы уже инициализированы
-                if (_chatsPanel != null)
-                {
-                    UpdateUI();
-                }
-            }
-        }
-
-        private void UpdateUI()
-        {
-            if (_viewModel == null || _usernameText == null || _chatsPanel == null) 
-            {
-                Console.WriteLine($"UpdateUI skipped: ViewModel={_viewModel != null}, UsernameText={_usernameText != null}, ChatsPanel={_chatsPanel != null}");
-                return;
-            }
-            
-            Console.WriteLine($"Updating UI. Chats: {_viewModel.Chats.Count}");
-            
-            // Обновляем имя пользователя
-            _usernameText.Text = _viewModel.CurrentUser.Username;
-            
-            // Очищаем и добавляем чаты
             _chatsPanel.Children.Clear();
             
-            foreach (var chat in _viewModel.Chats)
+            // Тестовые чаты
+            var chats = new[]
+            {
+                new Chat 
+                { 
+                    Id = "1", 
+                    Name = "John Doe", 
+                    UnreadCount = 2,
+                    LastMessage = new Message 
+                    { 
+                        Content = "Hello there! How are you doing?", 
+                        Timestamp = DateTime.Now.AddMinutes(-15)
+                    }
+                },
+                new Chat 
+                { 
+                    Id = "2", 
+                    Name = "Alice Smith", 
+                    UnreadCount = 0,
+                    LastMessage = new Message 
+                    { 
+                        Content = "Did you finish the project?", 
+                        Timestamp = DateTime.Now.AddHours(-2)
+                    }
+                },
+                new Chat 
+                { 
+                    Id = "3", 
+                    Name = "Bob Johnson", 
+                    UnreadCount = 3,
+                    LastMessage = new Message 
+                    { 
+                        Content = "Meeting tomorrow at 10 AM", 
+                        Timestamp = DateTime.Now.AddDays(-1)
+                    }
+                },
+                new Chat 
+                { 
+                    Id = "4", 
+                    Name = "Emma Wilson", 
+                    UnreadCount = 0,
+                    LastMessage = new Message 
+                    { 
+                        Content = "Check out this photo!", 
+                        Timestamp = DateTime.Now.AddDays(-2)
+                    }
+                }
+            };
+
+            foreach (var chat in chats)
             {
                 var chatItem = CreateChatItem(chat);
                 _chatsPanel.Children.Add(chatItem);
             }
             
-            // Обновляем счетчик
-            UpdateChatsCount();
+            _chatsCountText.Text = $"{chats.Length} chats";
         }
-
-        private Border CreateChatItem(Models.Chat chat)
+        
+        private Border CreateChatItem(Chat chat)
         {
             var border = new Border
             {
@@ -118,9 +130,9 @@ namespace MessengerClient.Views
 
             border.Tapped += (s, e) =>
             {
-                if (border.Tag is Models.Chat selectedChat && _viewModel != null)
+                if (border.Tag is Chat selectedChat)
                 {
-                    _viewModel.SelectedChat = selectedChat;
+                    _controller.ShowChat(selectedChat);
                 }
             };
 
@@ -169,7 +181,9 @@ namespace MessengerClient.Views
             var lastMessageText = new TextBlock
             {
                 Text = chat.LastMessage?.Content ?? "",
-                Foreground = new SolidColorBrush(Color.Parse("#666"))
+                Foreground = new SolidColorBrush(Color.Parse("#666")),
+                TextTrimming = TextTrimming.CharacterEllipsis,
+                MaxWidth = 250
             };
 
             infoPanel.Children.Add(nameText);
@@ -221,27 +235,6 @@ namespace MessengerClient.Views
 
             border.Child = grid;
             return border;
-        }
-
-        private void UpdateChatsCount()
-        {
-            if (_viewModel != null && _chatsCountText != null)
-            {
-                _chatsCountText.Text = $"{_viewModel.Chats.Count} chats";
-            }
-        }
-
-        private void ProfileBtn_Click(object? sender, RoutedEventArgs e)
-        {
-            Console.WriteLine("Profile button clicked");
-        }
-
-        private void LogoutBtn_Click(object? sender, RoutedEventArgs e)
-        {
-            if (_viewModel != null)
-            {
-                _viewModel.LogoutCommand.Execute(null);
-            }
         }
     }
 }
