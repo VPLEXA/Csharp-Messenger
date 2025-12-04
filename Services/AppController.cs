@@ -29,26 +29,33 @@ namespace MessengerClient.Services
         
         public void ShowLogin()
         {
-            var loginView = new LoginView(this);
-            _mainWindow.Content = loginView;
+            _mainWindow.Content = new LoginView();
+        }
+        
+        public void ShowRegister()
+        {
+            _mainWindow.Content = new RegisterView();
         }
         
         public void ShowChatList()
         {
-            var chatListView = new ChatListView(this);
-            _mainWindow.Content = chatListView;
+            _mainWindow.Content = new ChatListView();
         }
         
         public void ShowChat(Chat chat)
         {
-            var chatView = new ChatView(this, chat);
+            var chatView = new ChatView();
             _mainWindow.Content = chatView;
         }
         
         public void ShowProfile()
         {
-            var profileView = new ProfileView(this);
-            _mainWindow.Content = profileView;
+            _mainWindow.Content = new ProfileView();
+        }
+        
+        public void ShowSettings()
+        {
+            _mainWindow.Content = new SettingsView();
         }
         
         public void Logout()

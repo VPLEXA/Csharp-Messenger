@@ -1,163 +1,112 @@
-using System;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
-using Avalonia.Markup.Xaml;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 using MessengerClient.Models;
 using MessengerClient.Services;
 
 namespace MessengerClient.Views
 {
-    public partial class LoginView : UserControl
+    public class LoginView : UserControl
     {
-        private readonly AppController _controller;
-        private TextBlock? _errorText;
+        private readonly AuthService _authService;
         
-        public LoginView() : this(null!) { }
+        private TextBox _emailBox = null!;
+        private TextBox _passwordBox = null!;
+        private TextBlock _errorText = null!;
         
-        public LoginView(AppController controller)
+        public LoginView()
         {
-            _controller = controller;
-            InitializeComponent();
-            
-            // Создаем UI в коде
-            BuildUI();
-        }
-
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
+            _authService = new AuthService();
+            CreateUI();
         }
         
-        private void BuildUI()
+        private void CreateUI()
         {
             var stackPanel = new StackPanel
             {
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
                 Spacing = 15,
-                Width = 300,
-                Background = new SolidColorBrush(Color.Parse("#f0f0f0"))
+                Width = 350,
+                Background = new SolidColorBrush(Color.Parse("#f0f0f0")),
+                Margin = new Thickness(20)
             };
 
             // Заголовок
             var title = new TextBlock
             {
-                Text = "Messenger Login",
-                FontSize = 20,
+                Text = "Вход в Messenger",
+                FontSize = 24,
                 FontWeight = FontWeight.Bold,
                 HorizontalAlignment = HorizontalAlignment.Center,
-                Margin = new Thickness(0, 0, 0, 10)
+                Margin = new Thickness(0, 0, 0, 10),
+                Foreground = new SolidColorBrush(Color.Parse("#2b579a"))
             };
             stackPanel.Children.Add(title);
 
-            // Email - используем Button для получения клика
+            // Email
             var emailLabel = new TextBlock
             {
-                Text = "Email (click to enter):",
+                Text = "Email:",
                 FontWeight = FontWeight.SemiBold
             };
             stackPanel.Children.Add(emailLabel);
-
-            var emailButton = new Button
+            
+            _emailBox = new TextBox
             {
                 Height = 40,
                 Background = Brushes.White,
                 BorderBrush = Brushes.Gray,
                 BorderThickness = new Thickness(1),
-                HorizontalAlignment = HorizontalAlignment.Stretch
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                Padding = new Thickness(10, 0),
+                FontSize = 14
             };
-
-            var emailText = new TextBlock
-            {
-                Text = "Click to enter email",
-                Foreground = Brushes.Gray,
-                VerticalAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(10, 0)
-            };
-            emailButton.Content = emailText;
-            
-            emailButton.Click += (s, e) => ShowEmailDialog(emailText);
-            stackPanel.Children.Add(emailButton);
+            _emailBox.TextChanged += OnFieldChanged;
+            stackPanel.Children.Add(_emailBox);
 
             // Password
             var passwordLabel = new TextBlock
             {
-                Text = "Password (click to enter):",
+                Text = "Пароль:",
                 FontWeight = FontWeight.SemiBold,
                 Margin = new Thickness(0, 10, 0, 0)
             };
             stackPanel.Children.Add(passwordLabel);
-
-            var passwordButton = new Button
+            
+            _passwordBox = new TextBox
             {
                 Height = 40,
                 Background = Brushes.White,
                 BorderBrush = Brushes.Gray,
                 BorderThickness = new Thickness(1),
-                HorizontalAlignment = HorizontalAlignment.Stretch
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                Padding = new Thickness(10, 0),
+                FontSize = 14,
+                PasswordChar = '•'
             };
-
-            var passwordText = new TextBlock
-            {
-                Text = "Click to enter password",
-                Foreground = Brushes.Gray,
-                VerticalAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(10, 0)
-            };
-            passwordButton.Content = passwordText;
-            
-            passwordButton.Click += (s, e) => ShowPasswordDialog(passwordText);
-            stackPanel.Children.Add(passwordButton);
+            _passwordBox.TextChanged += OnFieldChanged;
+            stackPanel.Children.Add(_passwordBox);
 
             // Кнопка Login
-            var loginBtn = new Button
-            {
-                Content = "Login",
-                Height = 40,
-                Background = new SolidColorBrush(Color.Parse("#2b579a")),
-                Foreground = Brushes.White,
-                FontWeight = FontWeight.Bold,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                Margin = new Thickness(0, 20, 0, 0)
-            };
-            
-            // Сохраняем тексты для использования в логине
-            loginBtn.Click += (s, e) => 
-            {
-                if (emailText == null || passwordText == null || _errorText == null) return;
-                
-                var email = emailText.Text;
-                var password = passwordText.Text;
-                
-                if (email == "Click to enter email" || password == "Click to enter password")
-                {
-                    _errorText.Text = "Please enter email and password";
-                    return;
-                }
-                
-                if (!email.Contains("@"))
-                {
-                    _errorText.Text = "Please enter a valid email";
-                    return;
-                }
-                
-                _errorText.Text = "";
-                
-                _controller.CurrentUser = new User
-                {
-                    Id = "1",
-                    Username = email.Split('@')[0],
-                    Email = email,
-                    IsOnline = true
-                };
-                
-                _controller.ShowChatList();
-            };
-            
+            var loginBtn = CreateButton("Войти", "#2b579a");
+            loginBtn.Click += OnLoginClicked;
             stackPanel.Children.Add(loginBtn);
+
+            // Кнопка Register
+            var registerBtn = CreateButton("Регистрация", "#27ae60");
+            registerBtn.Click += (s, e) =>
+            {
+                var window = this.FindAncestorOfType<Window>();
+                if (window?.DataContext is AppController controller)
+                {
+                    controller.ShowRegister();
+                }
+            };
+            stackPanel.Children.Add(registerBtn);
 
             // Текст ошибки
             _errorText = new TextBlock
@@ -166,25 +115,81 @@ namespace MessengerClient.Views
                 TextAlignment = TextAlignment.Center,
                 TextWrapping = TextWrapping.Wrap,
                 HorizontalAlignment = HorizontalAlignment.Center,
-                MaxWidth = 280
+                MaxWidth = 330,
+                Margin = new Thickness(0, 10)
             };
             stackPanel.Children.Add(_errorText);
 
+            // Demo аккаунт
+            var demo = new TextBlock
+            {
+                Text = "Для демо: test@test.com / 123456",
+                Foreground = new SolidColorBrush(Color.Parse("#666")),
+                FontSize = 12,
+                TextAlignment = TextAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Margin = new Thickness(0, 10)
+            };
+            stackPanel.Children.Add(demo);
+
             this.Content = stackPanel;
+            
+            // Автозаполнение для демо
+            _emailBox.Text = "test@test.com";
+            _passwordBox.Text = "123456";
         }
         
-        private void ShowEmailDialog(TextBlock emailText)
+        private void OnFieldChanged(object sender, TextChangedEventArgs e)
         {
-            // Заглушка - в реальном приложении здесь будет диалог
-            emailText.Text = "test@example.com";
-            emailText.Foreground = Brushes.Black;
+            _errorText.Text = "";
         }
         
-        private void ShowPasswordDialog(TextBlock passwordText)
+        private void OnLoginClicked(object sender, RoutedEventArgs e)
         {
-            // Заглушка - в реальном приложении здесь будет диалог
-            passwordText.Text = "password123";
-            passwordText.Foreground = Brushes.Black;
+            var email = _emailBox.Text.Trim();
+            var password = _passwordBox.Text;
+            
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+            {
+                _errorText.Text = "Введите email и пароль";
+                return;
+            }
+            
+            if (!email.Contains("@"))
+            {
+                _errorText.Text = "Введите корректный email";
+                return;
+            }
+            
+            var user = _authService.Login(email, password);
+            if (user != null)
+            {
+                var window = this.FindAncestorOfType<Window>();
+                if (window?.DataContext is AppController controller)
+                {
+                    controller.CurrentUser = user;
+                    controller.ShowChatList();
+                }
+            }
+            else
+            {
+                _errorText.Text = "Неверный email или пароль";
+            }
+        }
+        
+        private Button CreateButton(string text, string color)
+        {
+            return new Button
+            {
+                Content = text,
+                Height = 45,
+                Background = new SolidColorBrush(Color.Parse(color)),
+                Foreground = Brushes.White,
+                FontWeight = FontWeight.Bold,
+                FontSize = 14,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                Margin = new Thickness(0, 5)
+            };
         }
     }
 }

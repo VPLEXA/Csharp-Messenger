@@ -3,7 +3,6 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
-using Avalonia.VisualTree;
 using MessengerClient.Services;
 
 namespace MessengerClient.Views
@@ -44,7 +43,7 @@ namespace MessengerClient.Views
 
             var messageText = new TextBlock
             {
-                Text = "Функция чатов в разработке...",
+                Text = "Функция чатов в разработке...\n\nВы сможете:\n• Создавать новые чаты\n• Отправлять сообщения\n• Видеть статус участников\n• Получать уведомления",
                 FontSize = 16,
                 TextAlignment = TextAlignment.Center,
                 Foreground = new SolidColorBrush(Color.Parse("#666")),

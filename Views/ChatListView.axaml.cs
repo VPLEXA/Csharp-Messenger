@@ -1,240 +1,115 @@
-using System;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
-using Avalonia.Markup.Xaml;
 using Avalonia.Media;
-using MessengerClient.Models;
+using Avalonia.VisualTree;
 using MessengerClient.Services;
 
 namespace MessengerClient.Views
 {
-    public partial class ChatListView : UserControl
+    public class SettingsView : UserControl
     {
-        private readonly AppController _controller;
-        private StackPanel? _chatsPanel;
-        private TextBlock? _chatsCountText;
-        
-        public ChatListView(AppController controller)
+        public SettingsView()
         {
-            _controller = controller;
-            InitializeComponent();
-            
-            this.Initialized += (s, e) =>
-            {
-                _chatsPanel = this.FindControl<StackPanel>("ChatsPanel");
-                _chatsCountText = this.FindControl<TextBlock>("ChatsCountText");
-                
-                var profileBtn = this.FindControl<Button>("ProfileBtn");
-                var logoutBtn = this.FindControl<Button>("LogoutBtn");
-                
-                if (profileBtn != null) profileBtn.Click += (s, e) => _controller.ShowProfile();
-                if (logoutBtn != null) logoutBtn.Click += (s, e) => _controller.Logout();
-                
-                LoadChats();
-            };
+            CreateUI();
         }
 
-        private void InitializeComponent()
+        private void CreateUI()
         {
-            AvaloniaXamlLoader.Load(this);
-        }
-        
-        private void LoadChats()
-        {
-            if (_chatsPanel == null || _chatsCountText == null) return;
-            
-            _chatsPanel.Children.Clear();
-            
-            // Тестовые чаты
-            var chats = new[]
+            var stackPanel = new StackPanel
             {
-                new Chat 
-                { 
-                    Id = "1", 
-                    Name = "John Doe", 
-                    UnreadCount = 2,
-                    LastMessage = new Message 
-                    { 
-                        Content = "Hello there! How are you doing?", 
-                        Timestamp = DateTime.Now.AddMinutes(-15)
-                    }
-                },
-                new Chat 
-                { 
-                    Id = "2", 
-                    Name = "Alice Smith", 
-                    UnreadCount = 0,
-                    LastMessage = new Message 
-                    { 
-                        Content = "Did you finish the project?", 
-                        Timestamp = DateTime.Now.AddHours(-2)
-                    }
-                },
-                new Chat 
-                { 
-                    Id = "3", 
-                    Name = "Bob Johnson", 
-                    UnreadCount = 3,
-                    LastMessage = new Message 
-                    { 
-                        Content = "Meeting tomorrow at 10 AM", 
-                        Timestamp = DateTime.Now.AddDays(-1)
-                    }
-                },
-                new Chat 
-                { 
-                    Id = "4", 
-                    Name = "Emma Wilson", 
-                    UnreadCount = 0,
-                    LastMessage = new Message 
-                    { 
-                        Content = "Check out this photo!", 
-                        Timestamp = DateTime.Now.AddDays(-2)
-                    }
-                }
+                Spacing = 20,
+                Margin = new Thickness(20),
+                HorizontalAlignment = HorizontalAlignment.Center
             };
 
-            foreach (var chat in chats)
+            var title = new TextBlock
             {
-                var chatItem = CreateChatItem(chat);
-                _chatsPanel.Children.Add(chatItem);
-            }
-            
-            _chatsCountText.Text = $"{chats.Length} chats";
-        }
-        
-        private Border CreateChatItem(Chat chat)
-        {
-            var border = new Border
+                Text = "⚙️ НАСТРОЙКИ",
+                FontSize = 24,
+                FontWeight = FontWeight.Bold,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Foreground = new SolidColorBrush(Color.Parse("#2b579a"))
+            };
+            stackPanel.Children.Add(title);
+
+            AddSetting(stackPanel, "🔔 Уведомления", "Включены");
+            AddSetting(stackPanel, "🎨 Тема", "Светлая");
+            AddSetting(stackPanel, "🔒 Приватность", "Только друзья");
+            AddSetting(stackPanel, "📱 Использование данных", "Обычное");
+            AddSetting(stackPanel, "🌐 Язык", "Русский");
+
+            var buttonsStack = new StackPanel
             {
-                Background = new SolidColorBrush(Color.Parse("#f8f9fa")),
-                Margin = new Thickness(0, 2),
-                Padding = new Thickness(15),
-                CornerRadius = new CornerRadius(5),
-                Tag = chat,
-                Cursor = new Cursor(StandardCursorType.Hand)
+                Spacing = 10,
+                Margin = new Thickness(0, 30, 0, 0),
+                HorizontalAlignment = HorizontalAlignment.Center
             };
 
-            border.PointerEntered += (s, e) =>
-            {
-                border.Background = new SolidColorBrush(Color.Parse("#e0e0e0"));
-            };
+            var saveBtn = CreateButton("💾 Сохранить настройки", "#2b579a");
+            saveBtn.Click += (s, e) => System.Diagnostics.Debug.WriteLine("Настройки сохранены");
+            buttonsStack.Children.Add(saveBtn);
 
-            border.PointerExited += (s, e) =>
+            var backBtn = CreateButton("← Назад в профиль", "#95a5a6");
+            backBtn.Click += (s, e) =>
             {
-                border.Background = new SolidColorBrush(Color.Parse("#f8f9fa"));
-            };
-
-            border.Tapped += (s, e) =>
-            {
-                if (border.Tag is Chat selectedChat)
+                var window = this.FindAncestorOfType<Window>();
+                if (window?.DataContext is AppController controller)
                 {
-                    _controller.ShowChat(selectedChat);
+                    controller.ShowProfile();
                 }
             };
+            buttonsStack.Children.Add(backBtn);
 
+            stackPanel.Children.Add(buttonsStack);
+
+            this.Content = stackPanel;
+        }
+        
+        private void AddSetting(StackPanel panel, string name, string value)
+        {
             var grid = new Grid();
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Star });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
-            // Avatar
-            var avatarBorder = new Border
-            {
-                Width = 50,
-                Height = 50,
-                Background = new SolidColorBrush(Color.Parse("#3498db")),
-                CornerRadius = new CornerRadius(25),
-                Margin = new Thickness(0, 0, 15, 0)
-            };
-
-            var avatarText = new TextBlock
-            {
-                Text = chat.Name.Length > 0 ? chat.Name[0].ToString().ToUpper() : "?",
-                Foreground = Brushes.White,
-                FontWeight = FontWeight.Bold,
-                FontSize = 18,
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center
-            };
-
-            avatarBorder.Child = avatarText;
-            Grid.SetColumn(avatarBorder, 0);
-            grid.Children.Add(avatarBorder);
-
-            // Chat Info
-            var infoPanel = new StackPanel
-            {
-                VerticalAlignment = VerticalAlignment.Center
-            };
-
             var nameText = new TextBlock
             {
-                Text = chat.Name,
-                FontWeight = FontWeight.Bold,
-                FontSize = 14
-            };
-
-            var lastMessageText = new TextBlock
-            {
-                Text = chat.LastMessage?.Content ?? "",
-                Foreground = new SolidColorBrush(Color.Parse("#666")),
-                TextTrimming = TextTrimming.CharacterEllipsis,
-                MaxWidth = 250
-            };
-
-            infoPanel.Children.Add(nameText);
-            infoPanel.Children.Add(lastMessageText);
-            Grid.SetColumn(infoPanel, 1);
-            grid.Children.Add(infoPanel);
-
-            // Time & Unread
-            var rightPanel = new StackPanel
-            {
+                Text = name,
+                FontWeight = FontWeight.SemiBold,
                 VerticalAlignment = VerticalAlignment.Center
             };
+            Grid.SetColumn(nameText, 0);
+            grid.Children.Add(nameText);
 
-            var timeText = new TextBlock
+            var valueBtn = new Button
             {
-                Text = chat.LastMessage?.Timestamp.ToString("HH:mm") ?? "",
-                Foreground = new SolidColorBrush(Color.Parse("#999")),
-                FontSize = 11
+                Content = value,
+                Background = Brushes.Transparent,
+                Foreground = new SolidColorBrush(Color.Parse("#3498db")),
+                BorderThickness = new Thickness(0),
+                FontWeight = FontWeight.SemiBold
             };
+            valueBtn.Click += (s, e) => System.Diagnostics.Debug.WriteLine($"Изменить {name}");
+            Grid.SetColumn(valueBtn, 1);
+            grid.Children.Add(valueBtn);
 
-            rightPanel.Children.Add(timeText);
-
-            if (chat.UnreadCount > 0)
+            panel.Children.Add(grid);
+        }
+        
+        private Button CreateButton(string text, string color)
+        {
+            return new Button
             {
-                var unreadBorder = new Border
-                {
-                    Background = new SolidColorBrush(Color.Parse("#e74c3c")),
-                    CornerRadius = new CornerRadius(10),
-                    HorizontalAlignment = HorizontalAlignment.Right,
-                    Margin = new Thickness(0, 5, 0, 0),
-                    Padding = new Thickness(6, 3)
-                };
-
-                var unreadText = new TextBlock
-                {
-                    Text = chat.UnreadCount.ToString(),
-                    Foreground = Brushes.White,
-                    FontSize = 10,
-                    FontWeight = FontWeight.Bold,
-                    HorizontalAlignment = HorizontalAlignment.Center
-                };
-
-                unreadBorder.Child = unreadText;
-                rightPanel.Children.Add(unreadBorder);
-            }
-
-            Grid.SetColumn(rightPanel, 2);
-            grid.Children.Add(rightPanel);
-
-            border.Child = grid;
-            return border;
+                Content = text,
+                Width = 250,
+                Height = 45,
+                Background = new SolidColorBrush(Color.Parse(color)),
+                Foreground = Brushes.White,
+                FontWeight = FontWeight.Bold,
+                FontSize = 14,
+                HorizontalAlignment = HorizontalAlignment.Center
+            };
         }
     }
 }

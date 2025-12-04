@@ -20,24 +20,3 @@ build_property.EnableComHosting =
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.EffectiveAnalysisLevelStyle = 9.0
 build_property.EnableCodeStyleSeverity = 
-
-[/Users/masha/Csharp-Messenger-1/App.axaml]
-build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
-
-[/Users/masha/Csharp-Messenger-1/Views/ChatListView.axaml]
-build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
-
-[/Users/masha/Csharp-Messenger-1/Views/ChatView.axaml]
-build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
-
-[/Users/masha/Csharp-Messenger-1/Views/LoginView.axaml]
-build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
-
-[/Users/masha/Csharp-Messenger-1/Views/MainWindow.axaml]
-build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
-
-[/Users/masha/Csharp-Messenger-1/Views/ProfileView.axaml]
-build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
-
-[/Users/masha/Csharp-Messenger-1/Views/TestView.axaml]
-build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
