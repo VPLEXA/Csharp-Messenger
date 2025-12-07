@@ -1,12 +1,11 @@
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
 namespace MessengerClient.Views
 {
-    public partial class MainWindow : Window
+    public partial class ChangePasswordView : UserControl
     {
-        public MainWindow()
+        public ChangePasswordView()
         {
             InitializeComponent();
         }
@@ -17,3 +16,4 @@ namespace MessengerClient.Views
         }
     }
 }
+

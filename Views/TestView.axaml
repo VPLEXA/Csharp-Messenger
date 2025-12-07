@@ -1,0 +1,17 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="MessengerClient.Views.TestView">
+    
+    <StackPanel Background="White">
+        <TextBlock Text="=== TEST VIEW ===" FontSize="20" FontWeight="Bold" Margin="10"/>
+        
+        <!-- Простой список в коде -->
+        <Button Name="AddButton" Content="Add Test Item" Margin="10" Padding="10" Background="Green" Foreground="White"/>
+        
+        <StackPanel Name="TestList" Margin="10">
+            <!-- Элементы будут добавляться через код -->
+        </StackPanel>
+        
+        <TextBlock Name="StatusText" Text="Ready" Margin="10" Foreground="Blue"/>
+    </StackPanel>
+</UserControl>

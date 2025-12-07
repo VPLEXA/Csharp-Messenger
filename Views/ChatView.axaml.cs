@@ -1,87 +1,19 @@
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Interactivity;
-using Avalonia.Layout;
-using Avalonia.Media;
-using Avalonia.VisualTree;
-using MessengerClient.Services;
+using Avalonia.Markup.Xaml;
 
 namespace MessengerClient.Views
 {
-    public class ChatView : UserControl
+    public partial class ChatView : UserControl
     {
         public ChatView()
         {
-            CreateUI();
+            InitializeComponent();
         }
-        
-        private void CreateUI()
+
+        private void InitializeComponent()
         {
-            var stackPanel = new StackPanel
-            {
-                Spacing = 10,
-                Margin = new Thickness(20)
-            };
-
-            var title = new TextBlock
-            {
-                Text = "💬 Чат",
-                FontSize = 24,
-                FontWeight = FontWeight.Bold,
-                HorizontalAlignment = HorizontalAlignment.Center,
-                Foreground = new SolidColorBrush(Color.Parse("#2b579a"))
-            };
-            stackPanel.Children.Add(title);
-
-            var message = new Border
-            {
-                Background = new SolidColorBrush(Color.Parse("#f8f9fa")),
-                CornerRadius = new CornerRadius(10),
-                Padding = new Thickness(20),
-                Margin = new Thickness(0, 50, 0, 0),
-                HorizontalAlignment = HorizontalAlignment.Center
-            };
-
-            var messageText = new TextBlock
-            {
-                Text = "Функция чатов в разработке...",
-                FontSize = 16,
-                TextAlignment = TextAlignment.Center,
-                Foreground = new SolidColorBrush(Color.Parse("#666")),
-                TextWrapping = TextWrapping.Wrap
-            };
-
-            message.Child = messageText;
-            stackPanel.Children.Add(message);
-
-            var backBtn = CreateButton("← Назад к списку чатов", "#95a5a6");
-            backBtn.Click += (s, e) =>
-            {
-                var window = this.FindAncestorOfType<Window>();
-                if (window?.DataContext is AppController controller)
-                {
-                    controller.ShowChatList();
-                }
-            };
-            stackPanel.Children.Add(backBtn);
-
-            this.Content = stackPanel;
-        }
-        
-        private Button CreateButton(string text, string color)
-        {
-            return new Button
-            {
-                Content = text,
-                Width = 250,
-                Height = 45,
-                Background = new SolidColorBrush(Color.Parse(color)),
-                Foreground = Brushes.White,
-                FontWeight = FontWeight.Bold,
-                FontSize = 14,
-                HorizontalAlignment = HorizontalAlignment.Center,
-                Margin = new Thickness(0, 30, 0, 0)
-            };
+            AvaloniaXamlLoader.Load(this);
         }
     }
 }

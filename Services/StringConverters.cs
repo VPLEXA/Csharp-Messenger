@@ -8,6 +8,9 @@ namespace MessengerClient.Services
     {
         public static readonly IValueConverter FirstLetter = new FuncValueConverter<string, string>(
             value => string.IsNullOrEmpty(value) ? "?" : value[0].ToString().ToUpper());
+        
+        public static readonly IValueConverter IsNotEmpty = new FuncValueConverter<string, bool>(
+            value => !string.IsNullOrEmpty(value));
     }
 }
 

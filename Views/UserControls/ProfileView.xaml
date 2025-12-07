@@ -1,0 +1,73 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="MessengerClient.Views.UserControls.ProfileView">
+
+    <ScrollViewer Padding="20">
+        <StackPanel Spacing="20">
+
+            <!-- AVATAR -->
+            <StackPanel HorizontalAlignment="Center">
+                <Border Width="120" Height="120" CornerRadius="60"
+                        BorderBrush="Gray" BorderThickness="2">
+                    <Image Source="{Binding Avatar}" Stretch="UniformToFill"/>
+                </Border>
+
+                <Button Content="Изменить аватар"
+                        Margin="0,10,0,0"
+                        Command="{Binding ChangeAvatarCommand}"/>
+            </StackPanel>
+
+            <!-- NAME -->
+            <StackPanel>
+                <TextBlock Text="Имя" FontWeight="Bold"/>
+                <TextBox Text="{Binding Name}" />
+            </StackPanel>
+
+            <!-- EMAIL (readonly) -->
+            <StackPanel>
+                <TextBlock Text="Email" FontWeight="Bold"/>
+                <TextBox Text="{Binding Email}" IsReadOnly="True"/>
+            </StackPanel>
+
+            <!-- STATUS -->
+            <StackPanel>
+                <TextBlock Text="Статус" FontWeight="Bold"/>
+                <ComboBox SelectedItem="{Binding Status}">
+                    <ComboBoxItem Content="online"/>
+                    <ComboBoxItem Content="offline"/>
+                    <ComboBoxItem Content="dnd"/>
+                </ComboBox>
+            </StackPanel>
+
+            <!-- BIO -->
+            <StackPanel>
+                <TextBlock Text="Био" FontWeight="Bold"/>
+                <TextBox AcceptsReturn="True"
+                         Height="120"
+                         TextWrapping="Wrap"
+                         Text="{Binding Bio}"/>
+            </StackPanel>
+
+            <!-- BUTTONS -->
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Center"
+                        Spacing="15">
+                <Button Content="Сохранить"
+                        Width="120"
+                        Command="{Binding SaveCommand}"/>
+
+                <Button Content="Отмена"
+                        Width="120"
+                        Command="{Binding CancelCommand}"/>
+
+                <Button Content="Сменить пароль"
+                        Width="150"
+                        Command="{Binding ChangePasswordCommand}"/>
+            </StackPanel>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

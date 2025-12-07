@@ -1,0 +1,173 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:MessengerClient.ViewModels"
+             x:Class="MessengerClient.Views.LoginView">
+    
+    <Grid Background="#F5F5F5">
+        <!-- Центральная карточка с формой -->
+        <Border HorizontalAlignment="Center" 
+                VerticalAlignment="Center"
+                Background="White"
+                CornerRadius="10"
+                BoxShadow="0 4 6 0 #00000020"
+                Padding="40"
+                MinWidth="400"
+                MaxWidth="450">
+            <StackPanel Spacing="20">
+                <!-- Заголовок -->
+                <TextBlock Text="Вход в систему" 
+                          FontSize="28" 
+                          FontWeight="Bold" 
+                          HorizontalAlignment="Center"
+                          Foreground="#2b579a"
+                          Margin="0,0,0,10"/>
+                
+                <TextBlock Text="Введите ваши учетные данные" 
+                          FontSize="14" 
+                          HorizontalAlignment="Center"
+                          Foreground="#666"
+                          Margin="0,0,0,20"/>
+                
+                <!-- Поле email -->
+                <StackPanel Spacing="5">
+                    <TextBlock Text="Email" 
+                              FontWeight="SemiBold"
+                              FontSize="13"
+                              Foreground="#333"/>
+                    <TextBox Name="EmailBox"
+                             Text="{Binding Email}" 
+                             Height="45"
+                             Padding="12,0"
+                             FontSize="15"
+                             Watermark="Введите email"
+                             BorderBrush="#999"
+                             BorderThickness="2"/>
+                </StackPanel>
+                
+                <!-- Поле пароля -->
+                <StackPanel Spacing="5">
+                    <TextBlock Text="Пароль" 
+                              FontWeight="SemiBold"
+                              FontSize="13"
+                              Foreground="#333"/>
+                    <TextBox Name="PasswordBox"
+                             Text="{Binding Password}" 
+                             Height="45"
+                             Padding="12,0"
+                             FontSize="15"
+                             Watermark="Введите пароль"
+                             BorderBrush="#999"
+                             BorderThickness="2"/>
+                </StackPanel>
+                
+                <!-- Сообщение об ошибке -->
+                <Border Background="#FFEBEE"
+                        BorderBrush="#F44336"
+                        BorderThickness="1"
+                        CornerRadius="5"
+                        Padding="12,8"
+                        IsVisible="{Binding ErrorMessage, Converter={StaticResource StringIsNotEmptyConverter}}">
+                    <TextBlock Text="{Binding ErrorMessage}" 
+                              Foreground="#C62828"
+                              TextWrapping="Wrap"
+                              FontSize="13"/>
+                </Border>
+                
+                <!-- Кнопка входа -->
+                <Button Command="{Binding LoginCommand}" 
+                        Height="50"
+                        FontSize="16"
+                        FontWeight="Bold"
+                        Background="#2b579a" 
+                        Foreground="White"
+                        BorderThickness="0"
+                        CornerRadius="5"
+                        Margin="0,10,0,0"
+                        Cursor="Hand"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center">
+                    <TextBlock Text="ВОЙТИ" 
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"/>
+                    <Button.Styles>
+                        <Style Selector="Button:pointerover">
+                            <Setter Property="Background" Value="#1e4a7a"/>
+                        </Style>
+                        <Style Selector="Button:pressed">
+                            <Setter Property="Background" Value="#153a5e"/>
+                        </Style>
+                    </Button.Styles>
+                </Button>
+                
+                <!-- Восстановление пароля -->
+                <Button Content="Забыли пароль?" 
+                        Command="{Binding ForgotPasswordCommand}" 
+                        Height="30"
+                        FontSize="12"
+                        Background="Transparent" 
+                        Foreground="#2b579a"
+                        BorderThickness="0"
+                        Margin="0,5,0,0"
+                        Cursor="Hand"
+                        HorizontalAlignment="Center">
+                    <Button.Styles>
+                        <Style Selector="Button:pointerover">
+                            <Setter Property="Foreground" Value="#1e4a7a"/>
+                        </Style>
+                    </Button.Styles>
+                </Button>
+                
+                <!-- Разделитель -->
+                <StackPanel Orientation="Horizontal" 
+                           HorizontalAlignment="Center" 
+                           Margin="0,20,0,10"
+                           Spacing="10">
+                    <Border Height="1" 
+                           Width="80" 
+                           Background="#DDD" 
+                           VerticalAlignment="Center"/>
+                    <TextBlock Text="или" 
+                              Foreground="#999" 
+                              FontSize="12"/>
+                    <Border Height="1" 
+                           Width="80" 
+                           Background="#DDD" 
+                           VerticalAlignment="Center"/>
+                </StackPanel>
+                
+                <!-- Вход через Google -->
+                <Button Command="{Binding GoogleLoginCommand}" 
+                        Height="45"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Background="White" 
+                        Foreground="#333"
+                        BorderBrush="#DDD"
+                        BorderThickness="1"
+                        CornerRadius="5"
+                        Cursor="Hand"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center">
+                    <StackPanel Orientation="Horizontal" 
+                               HorizontalAlignment="Center" 
+                               VerticalAlignment="Center"
+                               Spacing="10">
+                        <TextBlock Text="G" 
+                                  FontSize="18" 
+                                  FontWeight="Bold" 
+                                  Foreground="#4285F4"
+                                  VerticalAlignment="Center"/>
+                        <TextBlock Text="Войти через Google" 
+                                  VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <Button.Styles>
+                        <Style Selector="Button:pointerover">
+                            <Setter Property="Background" Value="#FAFAFA"/>
+                        </Style>
+                    </Button.Styles>
+                </Button>
+                
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

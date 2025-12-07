@@ -1,22 +1,22 @@
+using System;
 using MessengerClient.Models;
-using System.Collections.ObjectModel;
 
 namespace MessengerClient.Services
 {
     public class StateManager
     {
-        public User? CurrentUser { get; set; }
-        public ObservableCollection<Chat> Chats { get; set; } = new();
-        public Chat? CurrentChat { get; set; }
+        private User? _currentUser;
 
-        public void AddChat(Chat chat)
+        public User? CurrentUser
         {
-            Chats.Add(chat);
+            get => _currentUser;
+            set
+            {
+                _currentUser = value;
+                UserChanged?.Invoke(value);
+            }
         }
 
-        public void SetCurrentChat(Chat chat)
-        {
-            CurrentChat = chat;
-        }
+        public event Action<User?>? UserChanged;
     }
 }

@@ -1,0 +1,12 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:MessengerClient.Converters"
+             x:Class="MessengerClient.App">
+    <Application.Resources>
+        <converters:StatusToColorConverter x:Key="StatusToColorConverter"/>
+        <converters:StatusToStringConverter x:Key="StatusToStringConverter"/>
+        <converters:StringIsNotEmptyConverter x:Key="StringIsNotEmptyConverter"/>
+        <converters:LoadingButtonConverter x:Key="LoadingButtonConverter"/>
+        <converters:IsNotNullConverter x:Key="IsNotNullConverter"/>
+    </Application.Resources>
+</Application>

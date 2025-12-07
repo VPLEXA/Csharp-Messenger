@@ -1,0 +1,144 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:MessengerClient.ViewModels"
+             xmlns:models="clr-namespace:MessengerClient.Models"
+             x:Class="MessengerClient.Views.ChatView"
+             x:DataType="vm:ChatViewModel">
+    
+    <Grid Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#2b579a" Padding="15">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Back Button -->
+                <Button Grid.Column="0" Content="←" Command="{Binding BackCommand}" 
+                        Width="40" Height="40" Background="Transparent" Foreground="White"
+                        FontSize="20" FontWeight="Bold" Margin="0,0,15,0"
+                        Cursor="Hand"/>
+
+                <!-- Chat Info -->
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding CurrentChat.Name}" FontSize="16" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock Text="online" FontSize="12" Foreground="#a0c8ff"/>
+                </StackPanel>
+
+                <!-- Actions -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                    <Button Command="{Binding SendFileCommand}" 
+                            Width="40" Height="40" Background="Transparent" Foreground="White"
+                            Cursor="Hand"
+                            ToolTip.Tip="Отправить файл">
+                        <TextBlock Text="📎" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Button>
+                    <Button Command="{Binding SendImageCommand}" 
+                            Width="40" Height="40" Background="Transparent" Foreground="White"
+                            Cursor="Hand"
+                            ToolTip.Tip="Отправить изображение">
+                        <TextBlock Text="📷" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Messages -->
+        <ScrollViewer Grid.Row="1" Padding="15" VerticalScrollBarVisibility="Auto" Name="MessagesScrollViewer">
+            <ItemsControl ItemsSource="{Binding FilteredMessages}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="models:Message">
+                        <Grid Margin="0,8">
+                            <!-- Message Bubble -->
+                            <Border CornerRadius="15" 
+                                   Padding="12,8" 
+                                   MaxWidth="400"
+                                   HorizontalAlignment="Left"
+                                   Background="#e0e0e0"
+                                   Margin="0,0,0,0">
+                                <StackPanel>
+                                    <!-- Text Content -->
+                                    <TextBlock Text="{Binding Content}" 
+                                              Foreground="Black"
+                                              TextWrapping="Wrap"
+                                              FontSize="14"/>
+                                    
+                                    <!-- Message Info -->
+                                    <StackPanel Orientation="Horizontal" 
+                                               HorizontalAlignment="Right" 
+                                               Margin="0,5,0,0"
+                                               Spacing="5">
+                                        <TextBlock Text="{Binding Timestamp, StringFormat='HH:mm'}" 
+                                                  FontSize="10"
+                                                  Foreground="Gray"
+                                                  Opacity="0.7"/>
+                                        
+                                        <!-- Edited indicator -->
+                                        <TextBlock Text="✏️" 
+                                                  FontSize="10"
+                                                  IsVisible="{Binding EditedAt, Converter={StaticResource IsNotNullConverter}}"
+                                                  Opacity="0.7"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <!-- Message Input -->
+        <Border Grid.Row="2" Background="#f5f5f5" Padding="15" BorderBrush="#e0e0e0" BorderThickness="0,1,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBox Grid.Column="0" 
+                        Text="{Binding MessageText}" 
+                        Watermark="Введите сообщение..." 
+                        VerticalAlignment="Center" 
+                        BorderThickness="1" 
+                        BorderBrush="#DDD"
+                        Background="White"
+                        Padding="15,10"
+                        AcceptsReturn="True"
+                        TextWrapping="Wrap"
+                        MinHeight="40"
+                        MaxHeight="100"
+                        IsEnabled="True"/>
+
+                <Button Grid.Column="1" 
+                       Command="{Binding SendMessageCommand}"
+                       Width="100" 
+                       Height="40" 
+                       Background="#2b579a" 
+                       Foreground="White"
+                       FontWeight="Bold" 
+                       Margin="10,0,0,0"
+                       Cursor="Hand"
+                       CornerRadius="5"
+                       HorizontalContentAlignment="Center"
+                       VerticalContentAlignment="Center">
+                    <TextBlock Text="Отправить" 
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"/>
+                    <Button.Styles>
+                        <Style Selector="Button:pointerover">
+                            <Setter Property="Background" Value="#1e4a7a"/>
+                        </Style>
+                    </Button.Styles>
+                </Button>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

@@ -1,0 +1,208 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:MessengerClient.ViewModels"
+             mc:Ignorable="d"
+             d:DesignHeight="600" d:DesignWidth="800"
+             x:Class="MessengerClient.Views.ProfileView">
+    
+    <Design.DataContext>
+        <vm:ProfileViewModel/>
+    </Design.DataContext>
+    
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="40" Spacing="20">
+            
+            <!-- Заголовок -->
+            <TextBlock Text="Профиль" FontSize="24" FontWeight="Bold"/>
+            
+            <!-- Аватар -->
+            <StackPanel HorizontalAlignment="Center" Spacing="10">
+                <Border Width="150" Height="150" CornerRadius="75"
+                        Background="#E0E0E0" BorderBrush="Gray" BorderThickness="2">
+                    <Image Source="{Binding AvatarPath}" Width="150" Height="150">
+                        <Image.Clip>
+                            <EllipseGeometry RadiusX="75" RadiusY="75" Center="75,75"/>
+                        </Image.Clip>
+                    </Image>
+                </Border>
+                
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
+                    <Button Content="Выбрать аватар" Command="{Binding SelectAvatarCommand}"
+                            Padding="10,5"/>
+                    <Button Content="Удалить" Command="{Binding RemoveAvatarCommand}"
+                            Padding="10,5" Background="Transparent" Foreground="Red"/>
+                </StackPanel>
+            </StackPanel>
+            
+            <!-- Основная информация -->
+            <Grid ColumnDefinitions="Auto,1*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" 
+                  RowSpacing="15" ColumnSpacing="20">
+                
+                <!-- Имя пользователя -->
+                <TextBlock Text="Имя:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
+                <TextBox Text="{Binding Username}" Grid.Row="0" Grid.Column="1" 
+                         Width="300" HorizontalAlignment="Left"
+                         IsEnabled="True"/>
+                
+                <!-- Email -->
+                <TextBlock Text="Email:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
+                <TextBox Text="{Binding Email}" Grid.Row="1" Grid.Column="1"
+                         Width="300" HorizontalAlignment="Left"
+                         IsEnabled="True"/>
+                
+                <!-- Статус -->
+                <TextBlock Text="Статус:" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
+                <ComboBox ItemsSource="{Binding Statuses}" SelectedItem="{Binding SelectedStatus}"
+                          Grid.Row="2" Grid.Column="1" Width="200" HorizontalAlignment="Left"
+                          IsEnabled="True">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <Ellipse Width="10" Height="10" Fill="{Binding ., Converter={StaticResource StatusToColorConverter}}"/>
+                                <TextBlock Text="{Binding ., Converter={StaticResource StatusToStringConverter}}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                
+                <!-- Онлайн статус -->
+                <TextBlock Text="Показывать как онлайн:" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center"/>
+                <CheckBox IsChecked="{Binding IsOnline}" Grid.Row="3" Grid.Column="1"
+                          HorizontalAlignment="Left" VerticalAlignment="Center"
+                          IsEnabled="True"/>
+                
+                <!-- Био -->
+                <TextBlock Text="О себе:" Grid.Row="4" Grid.Column="0" VerticalAlignment="Top"/>
+                <TextBox Text="{Binding Bio}" Grid.Row="4" Grid.Column="1"
+                         AcceptsReturn="True" TextWrapping="Wrap" Height="100"
+                         VerticalAlignment="Stretch"
+                         IsEnabled="True"/>
+            </Grid>
+            
+            <!-- Настройки уведомлений -->
+            <Border Background="#F9F9F9" 
+                   CornerRadius="5" 
+                   Padding="20" 
+                   Margin="0,30,0,0">
+                <StackPanel Spacing="15">
+                    <TextBlock Text="Настройки уведомлений" 
+                              FontSize="18" 
+                              FontWeight="Bold"
+                              Margin="0,0,0,10"/>
+                    
+                    <CheckBox IsChecked="{Binding NotificationsEnabled}" 
+                             Content="Включить уведомления"
+                             IsEnabled="True"/>
+                    
+                    <CheckBox IsChecked="{Binding SoundEnabled}" 
+                             Content="Звук уведомлений"
+                             IsEnabled="{Binding NotificationsEnabled}"
+                             Margin="20,0,0,0"/>
+                    
+                    <CheckBox IsChecked="{Binding BannerOnly}" 
+                             Content="Только баннеры (без звука)"
+                             IsEnabled="{Binding NotificationsEnabled}"
+                             Margin="20,0,0,0"/>
+                    
+                    <CheckBox IsChecked="{Binding SmartNotifications}" 
+                             Content="Умные уведомления (не показывать, если активен в диалоге)"
+                             IsEnabled="{Binding NotificationsEnabled}"
+                             Margin="20,0,0,0"/>
+                </StackPanel>
+            </Border>
+            
+            <!-- Дополнительные действия -->
+            <StackPanel Orientation="Horizontal" 
+                       HorizontalAlignment="Center" 
+                       Spacing="15" 
+                       Margin="0,20,0,0">
+                <Button Command="{Binding ChangeEmailCommand}"
+                       Height="40"
+                       Width="140"
+                       FontSize="13"
+                       Background="Transparent" 
+                       BorderBrush="#DDD"
+                       BorderThickness="1"
+                       Cursor="Hand"
+                       HorizontalContentAlignment="Center"
+                       VerticalContentAlignment="Center">
+                    <TextBlock Text="Сменить email" 
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"/>
+                </Button>
+                <Button Command="{Binding ChangePasswordCommand}"
+                       Height="40"
+                       Width="140"
+                       FontSize="13"
+                       Background="Transparent" 
+                       BorderBrush="#DDD"
+                       BorderThickness="1"
+                       Cursor="Hand"
+                       HorizontalContentAlignment="Center"
+                       VerticalContentAlignment="Center">
+                    <TextBlock Text="Сменить пароль" 
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"/>
+                </Button>
+            </StackPanel>
+            
+            <!-- Кнопки -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="15" Margin="0,30,0,0">
+                <Button Command="{Binding ChangePasswordCommand}"
+                        Height="45"
+                        Width="150"
+                        FontSize="14"
+                        Background="Transparent" 
+                        BorderBrush="#DDD"
+                        BorderThickness="1"
+                        Cursor="Hand"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center">
+                    <TextBlock Text="Сменить пароль" 
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"/>
+                </Button>
+                
+                <Button Command="{Binding CancelCommand}"
+                        Height="45"
+                        Width="120"
+                        FontSize="14"
+                        Background="Transparent" 
+                        BorderBrush="#DDD"
+                        BorderThickness="1"
+                        Cursor="Hand"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center">
+                    <TextBlock Text="Отмена" 
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"/>
+                </Button>
+                
+                <Button Command="{Binding SaveCommand}"
+                        Height="45"
+                        Width="120"
+                        FontSize="14"
+                        FontWeight="Bold"
+                        Background="#0078D4" 
+                        Foreground="White"
+                        BorderThickness="0"
+                        CornerRadius="5"
+                        Cursor="Hand"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center">
+                    <TextBlock Text="Сохранить" 
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"/>
+                    <Button.Styles>
+                        <Style Selector="Button:pointerover">
+                            <Setter Property="Background" Value="#0066BB"/>
+                        </Style>
+                    </Button.Styles>
+                </Button>
+            </StackPanel>
+            
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
